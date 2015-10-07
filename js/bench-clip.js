@@ -3,7 +3,7 @@ var Pbf = require('../node_modules/mapbox-gl/node_modules/pbf'),
     Benchmark = require('benchmark'),
     fs = require('fs'),
     TilePyramid = require('../node_modules/mapbox-gl/js/source/tile_pyramid'),
-    WorkerTile = require('./worker_tile'),
+    WorkerTile = require('../node_modules/mapbox-gl/js/source/worker_tile'),
     TileCoord= require('../node_modules/mapbox-gl/js/source/tile_coord'),
     util = require('../node_modules/mapbox-gl/js/util/util');
 
@@ -240,8 +240,8 @@ function readTile(data, layers, tileCoord, useIndex){
         send: function(){}
     };
 
-    worker.parseModified(vt, layers, actor, function(){}, dz, xPos, yPos);
-    //worker.parse(vt, layers, actor, function(){}, dz, xPos, yPos);
+    //worker.parseModified(vt, layers, actor, function(){}, dz, xPos, yPos);
+    worker.parse(vt, layers, actor, function(){}, dz, xPos, yPos);
     var end = Date.now();
     timerun += (end - start);
 };
