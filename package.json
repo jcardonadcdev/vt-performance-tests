@@ -11,5 +11,12 @@
     "url": "git@devtopia.esri.com:jame3759/vt-perfomance-tests.git"
   },
   "author": "James Cardona",
-  "license": "ISC"
+  "license": "",
+  "dependencies": {
+    "mapbox-gl": "git+ssh://git@devtopia.esri.com/yann6817/mapbox-gl-js.git#indexed-vector-sources",
+    "vector-tile": "git+ssh://git@devtopia.esri.com/yann6817/vector-tile-js.git#esri-clipping-logic"
+  },
+  "devDependencies": {
+    "benchmark": "^1.0.0"
+  }
 }
