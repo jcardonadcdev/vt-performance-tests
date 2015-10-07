@@ -213,6 +213,8 @@ function readTile(data, layers, tileCoord, useIndex){
         pyramidTile = pyramid.addTile(tileCoord);
     }
 
+    //console.log(pyramidTile.parentId);
+
     if (pyramidTile.parentId){
         var childPos = getChildPos(tileCoord.id, pyramidTile.parentId);
         dz = childPos.dz;
@@ -238,7 +240,8 @@ function readTile(data, layers, tileCoord, useIndex){
         send: function(){}
     };
 
-    worker.parse(vt, layers, actor, function(){}, dz, xPos, yPos);
+    worker.parseModified(vt, layers, actor, function(){}, dz, xPos, yPos);
+    //worker.parse(vt, layers, actor, function(){}, dz, xPos, yPos);
     var end = Date.now();
     timerun += (end - start);
 };

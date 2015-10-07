@@ -22,7 +22,7 @@ function WorkerTile(params) {
     this.stacks = {};
 }
 
-WorkerTile.prototype.parse2 = function(data, layers, actor, callback, dz, xPos, yPos) {
+WorkerTile.prototype.parseModified = function(data, layers, actor, callback, dz, xPos, yPos) {
 
     this.status = 'parsing';
 
@@ -132,37 +132,70 @@ WorkerTile.prototype.parse2 = function(data, layers, actor, callback, dz, xPos, 
     var prevPlacementBucket;
     var remaining = bucketsInOrder.length;
 
+    /*
+     *  The async parsing here is a bit tricky.
+     *  Some buckets depend on resources that may need to be loaded async (glyphs).
+     *  Some buckets need to be parsed in order (to get collision priorities right).
+     *
+     *  Dependencies calls are initiated first to get those rolling.
+     *  Buckets that don't need to be parsed in order, aren't to save time.
+     */
+
     for (i = bucketsInOrder.length - 1; i >= 0; i--) {
         bucket = bucketsInOrder[i];
-        parseBucket(tile, bucket);
-        /*// immediately parse buckets where order doesn't matter and no dependencies
-        if (!bucket.needsPlacement && !bucket.getDependencies) {
-            parseBucket(tile, bucket);
+        bucket.needsPlacement = false;
+
+        // Link buckets that need to be parsed in order
+        if (bucket.needsPlacement) {
+            if (prevPlacementBucket) {
+                prevPlacementBucket.next = bucket;
+            } else {
+                bucket.previousPlaced = true;
+            }
+            prevPlacementBucket = bucket;
+        }
+
+        /*if (bucket.getDependencies) {
+            console.log("bucket needs dependencies");
+            bucket.getDependencies(this, actor, dependenciesDone(bucket));
         }*/
+
+        // immediately parse buckets where order doesn't matter and no dependencies
+        if (!bucket.needsPlacement && !bucket.getDependencies) {
+
+            parseBucket(tile, bucket);
+        }
+    }
+
+    function dependenciesDone(bucket) {
+        return function(err) {
+            bucket.dependenciesLoaded = true;
+            parseBucket(tile, bucket, err);
+        };
     }
 
     function parseBucket(tile, bucket, skip) {
-        //if (bucket.getDependencies && !bucket.dependenciesLoaded) return;
-        //if (bucket.needsPlacement && !bucket.previousPlaced) return;
+        /*if (bucket.getDependencies && !bucket.dependenciesLoaded) return;
+        if (bucket.needsPlacement && !bucket.previousPlaced) return;*/
 
         if (!skip) {
             var now = Date.now();
             if (bucket.features.length) bucket.addFeatures(collisionTile);
             var time = Date.now() - now;
-            /*if (bucket.interactive) {
+            if (bucket.interactive) {
                 for (var i = 0; i < bucket.features.length; i++) {
                     var feature = bucket.features[i];
                     tile.featureTree.insert(feature.bbox(), bucket.layers, feature);
                 }
-            }*/
-            /*if (typeof self !== 'undefined') {
+            }
+            if (typeof self !== 'undefined') {
                 self.bucketStats = self.bucketStats || {_total: 0};
                 self.bucketStats._total += time;
                 self.bucketStats[bucket.id] = (self.bucketStats[bucket.id] || 0) + time;
-            }*/
+            }
         }
 
-        /*remaining--;
+        remaining--;
 
         if (!remaining) {
             done();
@@ -173,30 +206,30 @@ WorkerTile.prototype.parse2 = function(data, layers, actor, callback, dz, xPos, 
         if (bucket.next) {
             bucket.next.previousPlaced = true;
             parseBucket(tile, bucket.next);
-        }*/
+        }
     }
 
     function done() {
 
         tile.status = 'done';
 
-        if (tile.redoPlacementAfterDone) {
+        /*if (tile.redoPlacementAfterDone) {
             var result = tile.redoPlacement(tile.angle, tile.pitch).result;
             buffers.glyphVertex = result.buffers.glyphVertex;
             buffers.iconVertex = result.buffers.iconVertex;
             buffers.collisionBoxVertex = result.buffers.collisionBoxVertex;
-        }
+        }*/
 
         var transferables = [],
             elementGroups = {};
 
-        for (k in buffers) {
+        /*for (k in buffers) {
             transferables.push(buffers[k].array);
         }
 
         for (k in buckets) {
             elementGroups[k] = buckets[k].elementGroups;
-        }
+        }*/
 
         callback(null, {
             elementGroups: elementGroups,
@@ -344,6 +377,7 @@ WorkerTile.prototype.parse = function(data, layers, actor, callback, dz, xPos, y
 
         // immediately parse buckets where order doesn't matter and no dependencies
         if (!bucket.needsPlacement && !bucket.getDependencies) {
+
             parseBucket(tile, bucket);
         }
     }
