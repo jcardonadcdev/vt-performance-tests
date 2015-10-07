@@ -1,0 +1,15 @@
+{
+  "name": "vt-perfomance-tests",
+  "version": "0.1.0",
+  "description": "A set of benchmark tests to compare index model and non-indexed model",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@devtopia.esri.com:jame3759/vt-perfomance-tests.git"
+  },
+  "author": "James Cardona",
+  "license": "ISC"
+}
