@@ -13,8 +13,8 @@
   "author": "James Cardona",
   "license": "",
   "dependencies": {
-    "mapbox-gl": "git+ssh://git@devtopia.esri.com/yann6817/mapbox-gl-js.git#indexed-vector-sources",
-    "vector-tile": "git+ssh://git@devtopia.esri.com/yann6817/vector-tile-js.git#esri-clipping-logic"
+    "mapbox-gl": "git+ssh://git@github.com/esri/mapbox-gl-js.git#indexed-vector-sources",
+    "vector-tile": "git+ssh://git@github.com/esri/vector-tile-js.git#clipping-logic"
   },
   "devDependencies": {
     "benchmark": "^1.0.0"
