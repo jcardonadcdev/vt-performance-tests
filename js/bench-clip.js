@@ -239,8 +239,7 @@ function readTile(data, layers, tileCoord, useIndex){
     var actor = {
         send: function(){}
     };
-
-    //worker.parseModified(vt, layers, actor, function(){}, dz, xPos, yPos);
+    
     worker.parse(vt, layers, actor, function(){}, dz, xPos, yPos);
     var end = Date.now();
     timerun += (end - start);
