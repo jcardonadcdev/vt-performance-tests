@@ -8,10 +8,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@devtopia.esri.com:jame3759/vt-perfomance-tests.git"
+    "url": "git@github.com:jcardonadcdev/vt-performance-tests.git"
   },
   "author": "James Cardona",
-  "license": "",
+  "license": "Apache-2.0",
   "dependencies": {
     "mapbox-gl": "git+ssh://git@github.com/esri/mapbox-gl-js.git#indexed-vector-sources",
     "vector-tile": "git+ssh://git@github.com/esri/vector-tile-js.git#clipping-logic"
